@@ -29,21 +29,26 @@
 
 <template>
   <div class="test">
+    <component
+      :is="item.asyncComponent"
+      v-for="(item, index) in components"
+      :key="index"
+      :content="item.data.content"
+    />
     <headline :content="$t('test')" />
     hello2 huhu234 {{ $t('configxyz') }}
     {{ $t('test') }}
     <br>
-    <picture-comp
+    <!-- <picture-comp
       :sources="$t('sources')"
       alt="image description"
-    />
+    /> -->
   </div>
 </template>
 
 <script>
 import Headline from '~/components/atoms/Headline';
-import PictureComp from '~/components/atoms/Picture';
-
+// import PictureComp from '~/components/atoms/Picture';
 
 export default {
   nuxtI18n: {
@@ -54,7 +59,7 @@ export default {
   },
   components: {
     Headline,
-    PictureComp
+    // PictureComp
   },
   data () {
     return {
@@ -68,8 +73,59 @@ export default {
     };
   },
 
+  asyncData () {
+    // return new Promise((resolve) => {
+    //   resolve({
+    //     c: 'atoms/Headline',
+    //     data: {
+    //       content: 'HURZFURZ'
+    //     }
+    //   });
+    // });
+    return new Promise((resolve) => {
+      resolve([{
+        c: 'atoms/Headline_Test',
+        data: {
+          content: 'HURZFURZ'
+        }
+      }, {
+        c: 'atoms/Text',
+        data: {
+          content: 'tolle wurst'
+        }
+      }]);
+    }).then((components) => {
+      return {
+        components: components
+      };
+    });
+  },
+
   mounted () {
     // console.log(this.$t('sources'));
+  },
+
+  created () {
+    // this.test = () => {
+    //   return new Promise((resolve) => {
+    //     require.ensure(['@/components/atoms/Headline', '@/components/atoms/Picture'], (require) => {
+    //       resolve(require(`@/components/${this.$data.c}`));
+    //     });
+    //   });
+    // };
+
+    this.components = this.components.map((item) => {
+      return {
+        asyncComponent: () => {
+          return new Promise((resolve) => {
+            require.ensure([], (require) => {
+              resolve(require(`@/components/${item.c}`));
+            });
+          });
+        },
+        data: item.data
+      };
+    });
   }
 };
 </script>

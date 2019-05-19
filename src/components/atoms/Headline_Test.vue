@@ -27,13 +27,8 @@ export default {
 
 .test1 {
   font-size: responsive;
-  color: red;
 
-  &.a {
-    color: yellow;
-  }
-
-  &.blue {
+  .blue {
     color: blue;
 
     .green {

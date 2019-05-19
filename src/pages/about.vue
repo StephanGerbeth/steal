@@ -10,13 +10,12 @@
   }
 }
 </i18n>
-
 <template>
   <div>
     <headline :content="$t('test')" />
     hello22 {{ $t('configxyz') }}
     {{ $t('hello') }}
-    <img
+    <!-- <img
       src="~/assets/image.svg"
       alt="test"
     >
@@ -28,7 +27,6 @@
       src="~/assets/image0.png"
       alt="test"
     >
-
     <intersect
       @enter="enter"
       @leave="leave"
@@ -54,13 +52,11 @@
     <img
       src="~/assets/sample/1920x300.jpg"
       alt="test"
-    >
+    > -->
   </div>
 </template>
-
 <script>
 import Headline from '~/components/atoms/Headline';
-
 export default {
   nuxtI18n: {
     paths: {
@@ -71,35 +67,29 @@ export default {
   components: {
     Headline
   },
-
   head () {
     return {
-      title: 'title of page'
+      'title': 'title of page'
     };
   },
-
   data () {
     return {
       msg: 'I will change'
     };
   },
-
   methods: {
     passing (value) {
       console.log('AHA', value.intersection.y, value.intersectionRatio);
     },
-
     enter () {
       console.log('enter');
     },
-
     leave () {
       console.log('leave');
     }
   }
 };
 </script>
-
 <style lang="postcss">
 img {
   display: block;

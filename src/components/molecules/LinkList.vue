@@ -25,8 +25,12 @@ export default {
 };
 </script>
 
-<style module>
-:global(a.nuxt-link-active) {
-  color: red;
+<style lang="postcss">
+a {
+  color: black;
+
+  &.nuxt-link-active {
+    color: #805e00;
+  }
 }
 </style>

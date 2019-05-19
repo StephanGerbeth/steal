@@ -1,14 +1,14 @@
 <template>
   <picture class="cover">
-    <source
-      v-for="item in sorted"
-      :key="item.type"
-      :srcset="item.src"
+    <!-- <source
+      v-for="(item, index) in sorted"
+      :key="index"
+      :srcset="item.srcset"
       :type="item.mime"
       :media="item.media"
-    >
+    > -->
     <img
-      :src="fallback.src"
+      :src="fallback"
       :alt="alt"
     >
   </picture>
@@ -39,25 +39,23 @@ export default {
     }
   },
 
-  data () {
-    return {
-      sorted: [],
-      fallback: {}
-    };
-  },
-  watch: {
-    sources: {
-      handler (values) {
-        let list = convertObjectToArray(values);
-        list = sortBy(list, Object.keys(breakpoint), 'media');
-        list = completeEntries(list, breakpoint);
-        list = addWebpSupport(list);
-        this.fallback = list[0];
-        this.sorted = list.reverse();
-        objectFitImages(this.$el);
-      },
-      immediate: true
+  computed: {
+    sorted () {
+      let list = convertObjectToArray(this.sources);
+      list = sortBy(list, Object.keys(breakpoint), 'media');
+      list = completeEntries(list, breakpoint);
+      return list.reverse();
+    },
+
+    fallback () {
+      let list = convertObjectToArray(this.sources);
+      list = sortBy(list, Object.keys(breakpoint), 'media');
+      return require(`@/assets/${list[0].src}?placeholder=true`).placeholder;
     }
+  },
+
+  mounted () {
+    objectFitImages(this.$el);
   }
 };
 
@@ -65,22 +63,12 @@ function convertObjectToArray (obj) {
   return Object.keys(obj).map((k) => obj[k]);
 }
 
-function completeEntries (list, breakpoint) {
-  return list.map((item) => {
-    item.media = breakpoint[item['media']];
-    item.mime = mime.getType((item.src.match(/\.([^.]*?)(?=\?|#|$)/) || [])[1]);
-    if (item.src.search('http') === -1) item.src = require(`@/assets/${item.src}`);
-    return item;
-  });
-}
-
-function addWebpSupport (list) {
+function completeEntries (list) {
   return list.reduce((result, item) => {
-    result.push(item, {
-      media: item['media'],
-      mime: mime.getType('webp'),
-      src: `${item.src}.webp`
-    });
+    if (item.src.search('http') === -1) {
+      result.push(createDefaultImageConfig(item));
+      result.push(createWebpImageConfig(item));
+    }
     return result;
   }, []);
 }
@@ -93,6 +81,28 @@ function sortBy (list, pattern, attribute) {
       return pattern.indexOf(a[attribute]) > pattern.indexOf(b[attribute]) ? 1 : -1;
     }
   });
+}
+
+function createDefaultImageConfig (item) {
+  return {
+    srcset: [
+      `${require('@/assets/' + item.src).src} 2x`,
+      `${require('@/assets/' + item.src + '?nonretina').src} 1x`
+    ].join(','),
+    mime: mime.getType((item.src.match(/\.([^.]*?)(?=\?|#|$)/) || [])[1]),
+    media: breakpoint[item['media']]
+  };
+}
+
+function createWebpImageConfig (item) {
+  return {
+    srcset: [
+      `${require('@/assets/' + item.src + '?webp').src} 2x`,
+      `${require('@/assets/' + item.src + '?webp&nonretina').src} 1x`
+    ].join(','),
+    mime: mime.getType('webp'),
+    media: breakpoint[item['media']]
+  };
 }
 </script>
 

@@ -35,11 +35,7 @@ Vue.component('svg-symbol', {
   },
 
   render (createElement) {
-    const use = createElement('use', {
-      attrs: {
-        'xlink:href': this.url
-      }
-    });
+    // if (this.$isServer) {
 
     const svg = createElement(
       'svg',
@@ -50,8 +46,19 @@ Vue.component('svg-symbol', {
           height: '100%'
         }
       },
-      [use]
+      [
+        createElement('use', {
+          attrs: {
+            'xlink:href': this.src.url
+          }
+        })
+      ]
     );
     return svg;
+    // } else {
+    //   console.log(this.$el);
+    //   return null;
+    // }
+
   }
 });

@@ -16,7 +16,7 @@
     "test": "npm run lint",
     "dev": "cross-env NODE_ENV=development node ./env/server.js",
     "build": "npx nuxt build --config-file env/nuxt.config.js",
-    "static": "npm run build && cross-env NODE_ENV=static nuxt generate --config-file env/nuxt.config.js",
+    "static": "npm run build && cross-env NODE_ENV=static nuxt generate --config-file env/nuxt.config.js && cp now.json dist/website && cd dist/website/ && now",
     "start": "cross-env NODE_ENV=production node ./env/server.js",
     "production": "npm run static && npm run start",
     "lint": "npm run lint:es && npm run lint:css",
@@ -29,9 +29,12 @@
     "semantic-release": "semantic-release",
     "travis-deploy-once": "travis-deploy-once",
     "storybook:dev": "start-storybook -p 6006 -c .storybook",
-    "storybook:prod": "build-storybook -c .storybook -o dist/storybook"
+    "storybook:prod": "build-storybook -c .storybook -o dist/storybook",
+    "now-build": "npm run static"
   },
   "devDependencies": {
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@bazzite/nuxt-optimized-images": "^0.1.0",
     "@commitlint/cli": "^7.5.2",
     "@commitlint/config-conventional": "^7.5.0",
     "@fullhuman/postcss-purgecss": "^1.1.0",
@@ -46,6 +49,7 @@
     "@storybook/vue": "^5.0.8",
     "babel-eslint": "^10.0.1",
     "babel-loader": "^8.0.5",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
     "babel-preset-vue": "^2.0.2",
     "branch-name-lint": "^1.0.5",
     "cross-env": "^5.2.0",
@@ -66,6 +70,8 @@
     "multi-loader": "^0.1.0",
     "node-gyp": "^4.0.0",
     "node-notifier": "^5.4.0",
+    "nuxt-netlify-http2-server-push": "^0.1.2",
+    "nuxt-svg-sprite-module": "^1.0.4",
     "open": "^6.1.0",
     "postcss-custom-media": "^7.0.8",
     "postcss-loader": "^3.0.0",
@@ -73,14 +79,19 @@
     "postcss-nested": "^4.1.2",
     "postcss-normalize": "^7.0.1",
     "postcss-object-fit-images": "^1.1.2",
+    "responsive-loader": "^1.2.0",
     "rucksack-css": "^1.0.2",
+    "sharp": "^0.22.1",
+    "spdy": "^4.0.0",
     "stylelint": "^10.0.1",
     "stylelint-config-css-modules": "^1.4.0",
     "stylelint-config-recess-order": "^2.0.2",
     "stylelint-config-standard": "^18.3.0",
+    "svg-inline-loader": "^0.8.0",
     "svg-sprite-loader": "^4.1.3",
     "svgo-loader": "^2.2.0",
     "terser": "^3.17.0",
+    "vue-svg-inline-loader": "^1.2.15",
     "webpack-virtual-modules": "0.1.10"
   },
   "dependencies": {
@@ -93,7 +104,8 @@
     "nuxt-i18n": "^5.8.5",
     "object-fit-images": "github:StephanGerbeth/object-fit-images",
     "rxjs": "^6.4.0",
-    "svg4everybody": "^2.1.9"
+    "svg4everybody": "^2.1.9",
+    "vue-lazy-hydration": "^1.0.0-beta.7"
   },
   "repository": {
     "type": "git",

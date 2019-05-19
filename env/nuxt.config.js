@@ -1,4 +1,4 @@
-// process.env.DEBUG = 'nuxt:*';
+process.env.DEBUG = 'nuxt:*';
 
 const path = require('path');
 const open = require('open');
@@ -17,7 +17,8 @@ module.exports = {
         return [
           [require.resolve('@nuxt/babel-preset-app'), { targets }]
         ];
-      }
+      },
+      plugins: ['@babel/syntax-dynamic-import']
     },
     postcss: {
       plugins: {
@@ -52,7 +53,9 @@ module.exports = {
   },
 
   render: {
-    http2: { push: true }
+    http2: {
+      push: true
+    }
   },
 
   router: {
@@ -71,16 +74,26 @@ module.exports = {
 
   plugins: [
     { src: '@/plugins/intersectionObserver' },
-    { src: '@/plugins/svgSymbol' }
+    // { src: '@/plugins/svgSymbol' }
   ],
 
   modules: [
     '@/modules/fix/image',
     '@/modules/virtual',
     '@/modules/svg',
-    '@/modules/webp',
+    // '@/modules/webp',
     '@/modules/image',
+
     '@nuxtjs/axios',
+    [
+      'nuxt-netlify-http2-server-push',
+      {
+        // Specify relative path to the dist directory and its content type
+        resources: [
+          { path: '**/*.js', as: 'script' }
+        ]
+      }
+    ],
     ['nuxt-i18n', {
       locales: [
         {
@@ -115,8 +128,8 @@ module.exports = {
         appleStatusBarStyle: 'default',
         favicon: true,
         name: 'TITLE',
-        author: '',
-        description: '',
+        author: 'metaAuthor',
+        description: 'metaDescription',
         theme_color: 'black',
         lang: 'de',
         ogType: 'website',

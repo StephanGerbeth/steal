@@ -44,3 +44,11 @@ export default {
   }
 };
 </script>
+
+<style lang="postcss">
+a {
+  display: block;
+  line-height: 3em;
+}
+</style>
+
